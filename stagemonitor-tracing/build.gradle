@@ -8,7 +8,7 @@ dependencies {
 	testCompile project(':stagemonitor-core').sourceSets.test.output
 	testCompile "org.eclipse.jetty:jetty-server:$jettyVersion"
 	testCompile "io.opentracing:opentracing-mock:$opentracingVersion"
-	testCompile 'net.sf.ehcache:ehcache-core:2.6.6'
+	testCompile 'net.sf.ehcache:ehcache-core:2.10.4'
 	testCompile "org.elasticsearch.client:transport:$esVersion"
 	testCompile 'org.springframework:spring-webmvc:4.1.0.RELEASE'
 }

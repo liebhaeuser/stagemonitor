@@ -9,14 +9,14 @@ import org.junit.Test;
 import org.stagemonitor.core.metrics.metrics2.MetricName;
 import org.stagemonitor.core.metrics.metrics2.Metric2Registry;
 
-public class StagemonitorCacheUsageListenerTest {
+public class StagemonitorCacheEventListenerTest {
 
 	private final Metric2Registry registry = new Metric2Registry();
-	private StagemonitorCacheUsageListener cacheUsageListener = new StagemonitorCacheUsageListener("cache", registry, true);
+	private StagemonitorCacheEventListener cacheUsageListener = new StagemonitorCacheEventListener("cache", registry, true);
 
 	@Test
 	public void testEvicted() throws Exception {
-		cacheUsageListener.notifyCacheElementEvicted();
+		cacheUsageListener.notifyElementEvicted(null, null);
 
 		final MetricName name = name("cache_delete").tag("cache_name", "cache").tag("reason", "eviction").tier("All").build();
 		assertNotNull(registry.getMeters().get(name));
@@ -25,7 +25,7 @@ public class StagemonitorCacheUsageListenerTest {
 
 	@Test
 	public void testExpired() throws Exception {
-		cacheUsageListener.notifyCacheElementExpired();
+		cacheUsageListener.notifyElementExpired(null, null);
 
 		final MetricName name = name("cache_delete").tag("cache_name", "cache").tag("reason", "expire").tier("All").build();
 		assertNotNull(registry.getMeters().get(name));
@@ -34,7 +34,7 @@ public class StagemonitorCacheUsageListenerTest {
 
 	@Test
 	public void testRemoved() throws Exception {
-		cacheUsageListener.notifyCacheElementRemoved();
+		cacheUsageListener.notifyElementRemoved(null, null);
 
 		final MetricName name = name("cache_delete").tag("cache_name", "cache").tag("reason", "remove").tier("All").build();
 		assertNotNull(registry.getMeters().get(name));
@@ -80,7 +80,7 @@ public class StagemonitorCacheUsageListenerTest {
 
 	@Test
 	public void testGetMeter() {
-		cacheUsageListener = new StagemonitorCacheUsageListener("cache", registry, false);
+		cacheUsageListener = new StagemonitorCacheEventListener("cache", registry, false);
 		cacheUsageListener.notifyGetTimeNanos(1);
 
 		final MetricName name = name("cache_get").tag("cache_name", "cache").tier("All").build();
@@ -90,17 +90,10 @@ public class StagemonitorCacheUsageListenerTest {
 
 	@Test
 	public void testEmpty() {
-		cacheUsageListener.notifyRemoveAll();
-		cacheUsageListener.notifyStatisticsAccuracyChanged(0);
+		cacheUsageListener.notifyRemoveAll(null);
 		cacheUsageListener.dispose();
-		cacheUsageListener.notifyCacheSearch(0);
-		cacheUsageListener.notifyXaCommit();
-		cacheUsageListener.notifyXaRollback();
-		cacheUsageListener.notifyStatisticsEnabledChanged(true);
-		cacheUsageListener.notifyStatisticsCleared();
-		cacheUsageListener.notifyCacheElementPut();
-		cacheUsageListener.notifyCacheElementUpdated();
-		cacheUsageListener.notifyTimeTakenForGet(0);
+		cacheUsageListener.notifyElementPut(null, null);
+		cacheUsageListener.notifyElementUpdated(null, null);
 
 		assertEquals(0, registry.getMeters().size());
 		assertEquals(0, registry.getCounters().size());
